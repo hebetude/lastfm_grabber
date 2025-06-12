@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source ~/dev/lastfm_grabber/.env
+source /home/ennui/dev/lastfm_grabber/.env
 
 echo "Starting Last.fm data fetch: $(date)" >> "$LOG_FILE"
 python3 "$SCRIPT_PATH" >> "$LOG_FILE" 2>&1
@@ -17,7 +17,7 @@ if [ $? -eq 0 ]; then
 
         if [ $? -eq 0 ]; then
             echo "Jekyll build completed successfully, moving static files to hosting dir" >> "$LOG_FILE"
-            rsync -av --delete "$PROJECT_DIR"_site/ "$DEST_DIR"
+            rsync -rlDv --no-owner --no-group --delete "$PROJECT_DIR"_site/ "$DEST_DIR"
         else
             echo "ERROR: Jekyll build failed!" >> "$LOG_FILE"
         fi
@@ -33,3 +33,9 @@ fi
 
 tail -n 500 "$LOG_FILE" > "$LOG_FILE.tmp" && mv "$LOG_FILE.tmp" "$LOG_FILE"
 echo "Finished Last.fm data update: $(date)" >> "$LOG_FILE"
+
+echo "Creating symlinks for memex data files" >> "$LOG_FILE"
+cp -a "$MEMEX_DATA"* "$MEMEX_SOURCE"content/
+
+echo "Syncing memex dir to where it's served"
+rsync -rlDv --no-owner --no-group --delete "$MEMEX_SOURCE" "$MEMEX_DEST"
