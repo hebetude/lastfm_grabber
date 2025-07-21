@@ -1,5 +1,6 @@
 import requests
 from dotenv import load_dotenv
+from pathlib import Path
 import os
 import json
 
@@ -42,7 +43,10 @@ def fetch_top_artists(period):
         raise Exception("API request failed with code ", response.status_code)
     
 def save_to_file(data, filename):
-    with open("./reports/" + filename, "w+") as f:
+    reports_dir = Path(__file__).parent / "reports"
+    reports_dir.mkdir(exist_ok=True)
+    filepath = reports_dir / filename
+    with filepath.open("w+") as f:
         json.dump(data, f, indent=2)
 
 if __name__ == "__main__":

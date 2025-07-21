@@ -1,5 +1,8 @@
 #!/bin/bash
 
+current_date_time=$(date)
+echo "Running rebuild cron job at: $current_date_time" >> "$LOG_FILE" 2>&1
+
 source /home/ennui/dev/lastfm_grabber/.env
 
 echo "Starting Last.fm data fetch: $(date)" >> "$LOG_FILE"
